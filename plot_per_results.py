@@ -74,7 +74,7 @@ args = parser.parse_args()
 print("csvFile  :", args.csvFile)
 
 csv_full_path = f'{args.csvFile}'
-print(f'csv full:", {csv_full_path}')
+print(f'csv full:"{csv_full_path}')
 
 pdf_file_name = args.csvFile.replace('.csv', '.pdf')
 
