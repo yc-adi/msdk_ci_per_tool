@@ -156,6 +156,11 @@ if row > 1 or col > 1:
     print(saved_file)
 
     plt.savefig(saved_file)
+
+    # save to a png file
+    png_file = pdf_file_name.replace(".pdf", ".png")
+    print(f'Save to file: {png_file}.')
+    plt.savefig(png_file)
     # plt.show()
 
 # -------------------------------------------------------------------------------------------------
