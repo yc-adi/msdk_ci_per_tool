@@ -33,7 +33,7 @@
 #
 ###############################################################################
 
-## plot_per_results.py
+# plot_per_results.py
 #
 # Create plots of the CI PER test results
 #
@@ -47,7 +47,7 @@ import numpy as np
 import pandas
 import itertools
 
-RES_DIR='/home/btm-ci/Workspace/ci_results/per'
+RES_DIR = '/home/btm-ci/Workspace/ci_results/per'
 
 SPEC = 30  # per spec in %
 phy_str = ["", "1M", "2M", "S8", "S2"]
@@ -63,7 +63,8 @@ packetLen,phy,atten,txPower,perMaster,perSlave
 """
 
 # Parse the command line arguments
-parser = argparse.ArgumentParser(description=descText, formatter_class=RawTextHelpFormatter)
+parser = argparse.ArgumentParser(
+    description=descText, formatter_class=RawTextHelpFormatter)
 parser.add_argument('csvFile', help='csv file containing PER data.')
 parser.add_argument('desc', help='Description of data.')
 parser.add_argument('basename', help='PDF file base name.')
@@ -72,7 +73,7 @@ args = parser.parse_args()
 
 print("csvFile  :", args.csvFile)
 
-csv_full_path = f'{RES_DIR}/{args.csvFile}'
+csv_full_path = f'{args.csvFile}'
 print(f'csv full:", {csv_full_path}')
 
 pdf_file_name = args.csvFile.replace('.csv', '.pdf')
@@ -113,7 +114,8 @@ if row > 1 or col > 1:
         print("len     :", packetLen)
         print("phy     :", phy)
         print("txPower :", txPower)
-        tempDf = df.loc[(df['packetLen'] == packetLen) & (df['phy'] == phy) & (df['txPower'] == txPower)]
+        tempDf = df.loc[(df['packetLen'] == packetLen) & (
+            df['phy'] == phy) & (df['txPower'] == txPower)]
 
         board = pdf_file_name.split('_')[2].replace('.pdf', '').upper()
         fig.suptitle(f'Packet Error Rate vs Attenuation\n{board}', fontsize=10)
@@ -127,7 +129,8 @@ if row > 1 or col > 1:
 
         axs[row, col].tick_params(axis='both', which='major', labelsize=4)
 
-        axs[row, col].plot(tempDf["atten"], tempDf["perSlave"], "-x", linewidth=0.25, ms=0.5)
+        axs[row, col].plot(tempDf["atten"], tempDf["perSlave"],
+                           "-x", linewidth=0.25, ms=0.5)
 
         axs[row, col].axhline(y=SPEC, color='r', linestyle=':', linewidth=0.5)
 
@@ -136,7 +139,8 @@ if row > 1 or col > 1:
         for i in range(len(a)):
             if p[i] > SPEC:
                 print(f'{a[i]}, {p[i]}')
-                axs[row, col].axvline(x=a[i], color='r', linestyle=':', linewidth=0.5)
+                axs[row, col].axvline(
+                    x=a[i], color='r', linestyle=':', linewidth=0.5)
                 axs[row, col].text(a[i], p[i], f'  {p[i]}% @ {a[i]} dBm', horizontalalignment='left',
                                    verticalalignment='center', fontsize=3)
                 break
@@ -165,7 +169,8 @@ for packetLen, phy, txPower in itertools.product(lens, phys, txPowers):
     print("len     :", packetLen)
     print("phy     :", phy)
     print("txPower :", txPower)
-    tempDf = df.loc[(df['packetLen'] == packetLen) & (df['phy'] == phy) & (df['txPower'] == txPower)]
+    tempDf = df.loc[(df['packetLen'] == packetLen) & (
+        df['phy'] == phy) & (df['txPower'] == txPower)]
 
     board = pdf_file_name.split('_')[2].replace('.pdf', '').upper()
 
