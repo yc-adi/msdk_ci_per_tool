@@ -33,7 +33,7 @@
 #
 ###############################################################################
 
-## plot_per_results.py
+# plot_per_results.py
 #
 # Create plots of the CI PER test results
 #
@@ -44,10 +44,11 @@ from argparse import RawTextHelpFormatter
 from time import sleep
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas
 import itertools
 
-RES_DIR='/home/btm-ci/Workspace/ci_results/per'
+RES_DIR = '/home/btm-ci/Workspace/ci_results/per'
 
 SPEC = 30  # per spec in %
 phy_str = ["", "1M", "2M", "S8", "S2"]
@@ -63,7 +64,8 @@ packetLen,phy,atten,txPower,perMaster,perSlave
 """
 
 # Parse the command line arguments
-parser = argparse.ArgumentParser(description=descText, formatter_class=RawTextHelpFormatter)
+parser = argparse.ArgumentParser(
+    description=descText, formatter_class=RawTextHelpFormatter)
 parser.add_argument('csvFile', help='csv file containing PER data.')
 parser.add_argument('desc', help='Description of data.')
 parser.add_argument('basename', help='PDF file base name.')
@@ -72,10 +74,12 @@ args = parser.parse_args()
 
 print("csvFile  :", args.csvFile)
 
-csv_full_path = f'{RES_DIR}/{args.csvFile}'
-print(f'csv full:", {csv_full_path}')
+csv_full_path = f'{args.csvFile}'
+csv_full_path = os.path.expanduser(csv_full_path)
+print(f'csv full:"{csv_full_path}')
 
 pdf_file_name = args.csvFile.replace('.csv', '.pdf')
+pdf_file_name = os.path.expanduser(pdf_file_name)
 
 # Create the plots
 phys = []
@@ -113,9 +117,11 @@ if row > 1 or col > 1:
         print("len     :", packetLen)
         print("phy     :", phy)
         print("txPower :", txPower)
-        tempDf = df.loc[(df['packetLen'] == packetLen) & (df['phy'] == phy) & (df['txPower'] == txPower)]
-
-        board = pdf_file_name.split('_')[2].replace('.pdf', '').upper()
+        tempDf = df.loc[(df['packetLen'] == packetLen) & (
+            df['phy'] == phy) & (df['txPower'] == txPower)]
+        
+        name = pdf_file_name.split('/')[-1]
+        board = name.split('_')[2].replace('.pdf', '').upper()
         fig.suptitle(f'Packet Error Rate vs Attenuation\n{board}', fontsize=10)
         fig.tight_layout()
         plt.subplots_adjust(bottom=0.1)
@@ -127,7 +133,8 @@ if row > 1 or col > 1:
 
         axs[row, col].tick_params(axis='both', which='major', labelsize=4)
 
-        axs[row, col].plot(tempDf["atten"], tempDf["perSlave"], "-x", linewidth=0.25, ms=0.5)
+        axs[row, col].plot(tempDf["atten"], tempDf["perSlave"],
+                           "-x", linewidth=0.25, ms=0.5)
 
         axs[row, col].axhline(y=SPEC, color='r', linestyle=':', linewidth=0.5)
 
@@ -136,7 +143,8 @@ if row > 1 or col > 1:
         for i in range(len(a)):
             if p[i] > SPEC:
                 print(f'{a[i]}, {p[i]}')
-                axs[row, col].axvline(x=a[i], color='r', linestyle=':', linewidth=0.5)
+                axs[row, col].axvline(
+                    x=a[i], color='r', linestyle=':', linewidth=0.5)
                 axs[row, col].text(a[i], p[i], f'  {p[i]}% @ {a[i]} dBm', horizontalalignment='left',
                                    verticalalignment='center', fontsize=3)
                 break
@@ -152,6 +160,11 @@ if row > 1 or col > 1:
     print(saved_file)
 
     plt.savefig(saved_file)
+
+    # save to a png file
+    png_file = pdf_file_name.replace(".pdf", ".png")
+    print(f'Save to file: {png_file}.')
+    plt.savefig(png_file)
     # plt.show()
 
 # -------------------------------------------------------------------------------------------------
@@ -165,9 +178,11 @@ for packetLen, phy, txPower in itertools.product(lens, phys, txPowers):
     print("len     :", packetLen)
     print("phy     :", phy)
     print("txPower :", txPower)
-    tempDf = df.loc[(df['packetLen'] == packetLen) & (df['phy'] == phy) & (df['txPower'] == txPower)]
+    tempDf = df.loc[(df['packetLen'] == packetLen) & (
+        df['phy'] == phy) & (df['txPower'] == txPower)]
 
-    board = pdf_file_name.split('_')[2].replace('.pdf', '').upper()
+    name = pdf_file_name.split('/')[-1]
+    board = name.split('_')[2].replace('.pdf', '').upper()
 
     fig = plt.figure()
     ax1 = fig.add_axes((0.1, 0.2, 0.8, 0.7))
