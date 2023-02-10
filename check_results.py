@@ -39,6 +39,7 @@ from curses.ascii import isdigit
 import os
 import sys
 
+LIMIT = 30.0
 
 WITH_PRINT = False
 
@@ -94,12 +95,12 @@ def check_results(res_file):
             if len(temp) >= 2:
                 if temp[-1].replace('.', '', 1).isdigit():
                     per = float(temp[-1])                    
-                    if per > 99.999:
+                    if per > LIMIT:
                         PRINT(f'FAILED: {per}')
                         return 2
                 if temp[-2].replace('.', '', 1).isdigit():
                     per = float(temp[-2])
-                    if per > 99.999:
+                    if per > LIMIT:
                         PRINT(f'FAILED: {per}')
                         return 2
 
