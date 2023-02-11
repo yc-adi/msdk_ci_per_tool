@@ -91,7 +91,7 @@ def check_results(res_file):
         while (line := file.readline().rstrip()):
             PRINT(line)
             temp = line.split(',')
-            PRINT(temp)
+            #PRINT(temp)
             if len(temp) >= 2:
                 if temp[-1].replace('.', '', 1).isdigit():
                     per = float(temp[-1])                    
